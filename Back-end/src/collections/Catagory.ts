@@ -1,20 +1,59 @@
-import { CollectionConfig } from 'payload/types'
+import { CollectionConfig } from "payload/types";
+import payload from "payload";
 
-const Catagory: CollectionConfig = {
-  slug: 'Catagory',
-  auth: false,
+const catagory: CollectionConfig = {
+  slug: "catagory",
+  access: {
+    read: () => true,
+    update: () => true,
+    delete: () => true,
+    create: () => true,
+  },
+  hooks: {
+    afterOperation: [
+      async (args) => {
+        if (args.operation == "create") {
+          payload.create({
+            collection: "logs",
+            data: {
+              collect: "catagory",
+              action: "Create",
+              Timestamp: new Date(),
+            },
+          });
+        } else if (args.operation == "update") {
+          payload.create({
+            collection: "logs",
+            data: {
+              collect: "catagory",
+              action: "Update",
+              Timestamp: new Date(),
+            },
+          });
+        } else if (args.operation == "delete") {
+          payload.create({
+            collection: "logs",
+            data: {
+              collect: "catagory",
+              action: "Delete",
+              Timestamp: new Date(),
+            },
+          });
+        }
+      },
+    ],
+  },
   admin: {
-    useAsTitle: 'name',
+    useAsTitle: "name",
   },
   fields: [
     {
-      name: 'name',
-      label: 'Priority',
-      type: 'select',
-      options: ['High_Priority', 'Medium_Priority', 'Low_Priority'],
+      name: "name",
+      label: "Category Name",
+      type: "text",
       required: true,
     },
   ],
-}
+};
 
-export default Catagory
+export default catagory;
